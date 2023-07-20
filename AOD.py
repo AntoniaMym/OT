@@ -252,55 +252,22 @@ class aod:
         #Power = Vpp^2/8R = Vpp^2/400 (R= 50 Ohms) , Pmax = 25/400 = 100/1600 = 1/16 Watts
         #Pmax = 62.5 mW
         #Maximum Power for ADO 2W, tested with 1,7 Watts
-        with nidaqmx.Task() as task:
-            task.do_channels.add_do_chan('cDAQ1Mod1/port0/line0:7')
-            task.write(np.uint32(a*255))
-
+        with nidaqmx.Task() as taskCS:
+            taskCS.do_channels.add_do_chan('cDAQ1Mod1/port0/line31')
+            taskCS.write(False)
+            with nidaqmx.Task() as task:
+                task.do_channels.add_do_chan('cDAQ1Mod1/port0/line0:7')
+                task.write(np.uint32(a*255))
+            taskCS.write(True)
+            
     def setYAmp(self,a):
-        with nidaqmx.Task() as task:
-            task.do_channels.add_do_chan('cDAQ1Mod2/port0/line0:7')
-            task.write(np.uint32(a*255))
-
-    def NtoTask(self,N):
-        
-        binN1 = bin(N)
-        binN2 = binN1.replace("b","0")
-        zeros = "0"*23
-        binN = zeros + binN2
-        fin = len(binN)
-        
-        n0 = np.uint32(binN[fin-1:fin])
-        n1 = np.uint32(binN[fin-2:fin-1])
-        n2 = np.uint32(binN[fin-3:fin-2])
-        n3 = np.uint32(binN[fin-4:fin-3])
-        n4 = np.uint32(binN[fin-5:fin-4])
-        n5 = np.uint32(binN[fin-6:fin-5])
-        n6 = np.uint32(binN[fin-7:fin-6])
-        n7 = np.uint32(binN[fin-8:fin-7])
-        n8 = np.uint32(binN[fin-9:fin-8])
-
-        n9 = np.uint32(binN[fin-10:fin-9])
-        n10 = np.uint32(binN[fin-11:fin-10])
-        n11 = np.uint32(binN[fin-12:fin-11])
-        n12 = np.uint32(binN[fin-13:fin-12])
-        n13 = np.uint32(binN[fin-14:fin-13])
-        n14 = np.uint32(binN[fin-15:fin-14])
-        n15 = np.uint32(binN[fin-16:fin-15])
-        n16 = np.uint32(binN[fin-17:fin-16])
-        
-        n17 = np.uint32(binN[fin-18:fin-17])
-        n18 = np.uint32(binN[fin-19:fin-18])
-        n19 = np.uint32(binN[fin-20:fin-19])
-        n20 = np.uint32(binN[fin-21:fin-20])
-        n21 = np.uint32(binN[fin-22:fin-21])
-        n22 = np.uint32(binN[fin-23:fin-22])
-        n23 = np.uint32(binN[fin-24:fin-23])
-##        n21= np.uint32(0)
-##        n22= np.uint32(0)
-##        n23= np.uint32(0)
-
-        self.value = [bool(n0), bool(n1),bool(n2),bool(n3),bool(n4),bool(n5),bool(n6),bool(n7),bool(n8),bool(n9),bool(n10),bool(n11),bool(n12),bool(n13),bool(n14),bool(n15),bool(n16),bool(n17),bool(n18),bool(n19),bool(n20),bool(n21),bool(n22),bool(n23)]
-        #print(value)
+        with nidaqmx.Task() as taskCS:
+            taskCS.do_channels.add_do_chan('cDAQ1Mod2/port0/line31')
+            taskCS.write(False)
+            with nidaqmx.Task() as task:
+                task.do_channels.add_do_chan('cDAQ1Mod2/port0/line0:7')
+                task.write(np.uint32(a*255))
+            taskCS.write(True)
 
         
     def setXFreq(self,f):
@@ -312,77 +279,56 @@ class aod:
         #Power = Vpp^2/8R = Vpp^2/400 (R= 50 Ohms) , Pmax = 25/400 = 100/1600 = 1/16 Watts
         #Pmax = 62.5 mW
         #Maximum Power for ADO 2W, tested with 1,7 Watts
-                #N = np.uint32(f*(2**(23))/(500))  #revisar
+        #N = np.uint32(f*(2**(23) * 2**8)/(500))  #shifted by 8 bits as port uses lines 8 to 30
         #print(binN)
-        N = np.uint32(f * (2**23)/500)
-        self.NtoTask(N)
-        with nidaqmx.Task() as task:
-            task.do_channels.add_do_chan('cDAQ1Mod1/port0/line8')
-            task.do_channels.add_do_chan('cDAQ1Mod1/port0/line9')
-            task.do_channels.add_do_chan('cDAQ1Mod1/port0/line10')
-            task.do_channels.add_do_chan('cDAQ1Mod1/port0/line11')
-
-            task.do_channels.add_do_chan('cDAQ1Mod1/port0/line12')
-            task.do_channels.add_do_chan('cDAQ1Mod1/port0/line13')
-            task.do_channels.add_do_chan('cDAQ1Mod1/port0/line14')
-            task.do_channels.add_do_chan('cDAQ1Mod1/port0/line15')
-
-            task.do_channels.add_do_chan('cDAQ1Mod1/port0/line16')
-            task.do_channels.add_do_chan('cDAQ1Mod1/port0/line17')
-            task.do_channels.add_do_chan('cDAQ1Mod1/port0/line18')
-            task.do_channels.add_do_chan('cDAQ1Mod1/port0/line19')
-
-            task.do_channels.add_do_chan('cDAQ1Mod1/port0/line20')
-            task.do_channels.add_do_chan('cDAQ1Mod1/port0/line21')
-            task.do_channels.add_do_chan('cDAQ1Mod1/port0/line22')
-            task.do_channels.add_do_chan('cDAQ1Mod1/port0/line23')
-
-            task.do_channels.add_do_chan('cDAQ1Mod1/port0/line24')
-            task.do_channels.add_do_chan('cDAQ1Mod1/port0/line25')
-            task.do_channels.add_do_chan('cDAQ1Mod1/port0/line26')
-            task.do_channels.add_do_chan('cDAQ1Mod1/port0/line27')
-
-            task.do_channels.add_do_chan('cDAQ1Mod1/port0/line28')
-            task.do_channels.add_do_chan('cDAQ1Mod1/port0/line29')
-            task.do_channels.add_do_chan('cDAQ1Mod1/port0/line30')
-            task.do_channels.add_do_chan('cDAQ1Mod1/port0/line31')
+        if f < 60 or f > 90:
+            print('X is out of range')
+            return
+        N = np.uint32(2**8 * f * (2**23)/500)
+        with nidaqmx.Task() as taskCS:
+            taskCS.do_channels.add_do_chan('cDAQ1Mod1/port0/line31')
+            taskCS.write(False)
+            with nidaqmx.Task() as task:
+                task.do_channels.add_do_chan('cDAQ1Mod1/port0/line8:30')
+                task.write(N)
+            taskCS.write(True)
             
-            task.write(self.value)
-
     def setYFreq(self,f):
-        N = np.uint32(f * (2**23)/500)
-        self.NtoTask(N)
+        if f < 60 or f > 90:
+            print('Y is out of range')
+            return
+        N = np.uint32(2**8 * f * (2**23)/500)
+        with nidaqmx.Task() as taskCS:
+            taskCS.do_channels.add_do_chan('cDAQ1Mod2/port0/line31')
+            taskCS.write(False)
+            with nidaqmx.Task() as task:
+                task.do_channels.add_do_chan('cDAQ1Mod2/port0/line8:30')
+                task.write(N)
+            taskCS.write(True)
+
+    def setXCSHigh(self):
+
         with nidaqmx.Task() as task:
-            task.do_channels.add_do_chan('cDAQ1Mod2/port0/line8')
-            task.do_channels.add_do_chan('cDAQ1Mod2/port0/line9')
-            task.do_channels.add_do_chan('cDAQ1Mod2/port0/line10')
-            task.do_channels.add_do_chan('cDAQ1Mod2/port0/line11')
+            task.do_channels.add_do_chan('cDAQ1Mod1/port0/line31')
+            task.write(True)
 
-            task.do_channels.add_do_chan('cDAQ1Mod2/port0/line12')
-            task.do_channels.add_do_chan('cDAQ1Mod2/port0/line13')
-            task.do_channels.add_do_chan('cDAQ1Mod2/port0/line14')
-            task.do_channels.add_do_chan('cDAQ1Mod2/port0/line15')
+    def setXCSLow(self):
 
-            task.do_channels.add_do_chan('cDAQ1Mod2/port0/line16')
-            task.do_channels.add_do_chan('cDAQ1Mod2/port0/line17')
-            task.do_channels.add_do_chan('cDAQ1Mod2/port0/line18')
-            task.do_channels.add_do_chan('cDAQ1Mod2/port0/line19')
+        with nidaqmx.Task() as task:
+            task.do_channels.add_do_chan('cDAQ1Mod1/port0/line31')
+            task.write(False)
 
-            task.do_channels.add_do_chan('cDAQ1Mod2/port0/line20')
-            task.do_channels.add_do_chan('cDAQ1Mod2/port0/line21')
-            task.do_channels.add_do_chan('cDAQ1Mod2/port0/line22')
-            task.do_channels.add_do_chan('cDAQ1Mod2/port0/line23')
+    def setYCSHigh(self):
 
-            task.do_channels.add_do_chan('cDAQ1Mod2/port0/line24')
-            task.do_channels.add_do_chan('cDAQ1Mod2/port0/line25')
-            task.do_channels.add_do_chan('cDAQ1Mod2/port0/line26')
-            task.do_channels.add_do_chan('cDAQ1Mod2/port0/line27')
-
-            task.do_channels.add_do_chan('cDAQ1Mod2/port0/line28')
-            task.do_channels.add_do_chan('cDAQ1Mod2/port0/line29')
-            task.do_channels.add_do_chan('cDAQ1Mod2/port0/line30')
+        with nidaqmx.Task() as task:
             task.do_channels.add_do_chan('cDAQ1Mod2/port0/line31')
-            
-            task.write(self.value)
+            task.write(1)
+
+    def setYCSLow(self):
+
+        with nidaqmx.Task() as task:
+            task.do_channels.add_do_chan('cDAQ1Mod2/port0/line31')
+            task.write(0)
+        
         
         
